@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.project1.dao.mapper.PreexamMapper">
+    <select id="findList" parameterType="Map" resultType="Preexamer">
+        select * from preexam where `name`like #{name} and identifyID like #{identifyID}
+        <if test="companyIndustry !=null and companyIndustry!=''">
+            and companyIndustry=#{companyIndustry}
+        </if>
+        <if test="preexamStatus !=null and preexamStatus!=''">
+            and preexamStatus = #{preexamStatus}
+        </if>
+        <if test="preexamGrade !=null and preexamGrade!=''">
+            and preexamGrade = #{preexamGrade}
+        </if>
+        <if test="sex !=null and sex!=''">
+            and sex = #{sex}
+        </if>
+         limit #{offset},#{pageSize}
+    </select>
+
+    <select id="getTotal" parameterType="Map" resultType="Integer">
+        select count(id) from preexam where `name` like #{name} and identifyID like #{identifyID}
+        <if test="companyIndustry !=null and companyIndustry!=''">
+            and companyIndustry =#{companyIndustry}
+        </if>
+        <if test="preexamStatus !=null and preexamStatus!=''">
+            and preexamStatus = #{preexamStatus}
+        </if>
+        <if test="preexamGrade !=null and preexamGrade!=''">
+            and preexamGrade = #{preexamGrade}
+        </if>
+        <if test="sex !=null and sex!=''">
+            and sex = #{sex}
+        </if>
+  	</select>
+
+    <select id="findDetail" parameterType="Map" resultType="Preexamer">
+        select * from preexam where id=#{id}
+    </select>
+
+    <select id="findPreexaminfo" parameterType="String" resultType="Preexamer">
+  		select * from preexam where identifyID = #{identifyID}
+  	</select>
+    <select id="sexStats" parameterType="String" resultType="Map">
+  		select count(identifyID) as peoNum,sex from preexam group by sex having sex is not null and sex &lt;&gt;''
+  	</select>
+
+    <select id="industryStats" parameterType="String" resultType="Map">
+  		select count(identifyID) as peoNum,companyIndustry from preexam group by companyIndustry having companyIndustry is not null and companyIndustry &lt;&gt;''
+  	</select>
+
+    <select id="incomeStats" parameterType="String" resultType="Map">
+  		select count(identifyID) as peoNum,annualIncome from preexam group by annualIncome having annualIncome is not null and annualIncome &lt;&gt;''
+  	</select>
+
+
+    <update id="add" parameterType="Preexamer">
+  		insert into preexam values(null,#{name},#{sex},#{phone},#{email},#{identifyID},#{studentNum},#{examNum},#{englishName},#{totalGrade},#{compreGrade},#{englishGrade},#{isInternalClass},#{identifyBeginTime},#{identifyEndTime},#{age},#{isMarriage},#{policyStatus},#{registerLocation},#{phone2},#{telephone},#{residenceLocation},#{workExperiment},#{reward},#{linkman},#{relationship},#{linkmanPhone},#{isTutorialClass},#{tutorialClassName},#{isSmba},#{smbaClass},#{selfIntroduce},#{workCompany},#{workbeginTime},#{workEndTime},#{workFunction},#{workDepartment},#{departmentPeoNum},#{subordinateNum},#{workPosition},#{workLocation},#{isSelfBusiness},#{isMarket},#{annualIncome},#{companyType},#{companyIndustry},#{companyIntroduce},#{vocationalCertificate1},#{vocationalCertificate2},#{workYears},#{manageYears},#{workCompany2},#{workBeginTime2},#{workEndTime2},#{workFunction2},#{workDepartment2},#{departmentPeoNum2},#{subordinateNum2},#{workPosition2},#{workLocation2},#{isSelfBusiness2},#{isMarket2},#{annualIncome2},#{companyType2},#{companyIndustry2},#{companyIntroduce2},#{refereeName},#{refereeCompany},#{refereeDepartment},#{refereePosition},#{refereeEmail},#{refereePhone},#{refereeName2},#{refereeCompany2},#{refereeDepartment2},#{refereePosition2},#{refereeEmail2},#{refereePhone2},#{eduType},#{eduLevel},#{graduateUni},#{eduBeginTime},#{eduMajor},#{graduateTime},#{eduCertificateNum},#{isDegree},#{degreeYear},#{eduType2},#{eduLevel2},#{graduateUni2},#{eduBeginTime2},#{eduMajor2},#{graduateTime2},#{eduCertificateNum2},#{isDegree2},#{degreeYear2},#{englishCertificate},#{overseaExperiment},#{overseaContext},#{toefl},#{ielts},#{gmat},#{gre},#{pets},#{oralInterprete},#{otherTest},#{oralCommunicate},#{classSelect},#{recordStatus},#{dormitory},#{verificationCode},#{reportNum},#{overseeReportNum},#{getNoticeMode},#{getAddress},#{postcode},#{receiver},#{receiverContact},#{isMaterial},#{preexamStatus},#{preexamGrade})
+  	</update>
+
+    <delete id="deleteOne">
+        delete from preexam where id=#{id}
+    </delete>
+
+    <update id="deleteMany" parameterType="String">
+  		delete from preexam where id in (${value})
+  	</update>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.project1.dao.mapper.UserMapper">
+    <sql id = "all_user_columns">
+         id,email,password,username,role,status,regTime,regIp
+    </sql>
+    <!--将通用的sql查询条件抽取出来,成为sql片段 ,给不同方法应用  -->
+    <!--模糊登录AND username LIKE '%${userName}%'-->
+    <sql id="query_user_sql_where">
+        <if test="username!=null">
+            AND username= #{username}
+        </if>
+        <if test="password!=null">
+            AND PASSWORD= #{password}
+        </if>
+    </sql>
+    <!-- id和dao.mapper对应-->
+    <select id="getUserList" parameterType="user" resultType="user">
+        SELECT
+        <include refid="all_user_columns"></include>
+        FROM user
+        <where>
+            <include refid="query_user_sql_where"></include>
+        </where>
+    </select>
+    <select id="findList" parameterType="Map" resultType="User">
+        select id,username,password,email,role from user where username like #{username} and email like #{email}
+        <if test="role !=null and role!=''">
+            and role = #{role}
+        </if>
+         limit #{offset},#{pageSize}
+    </select>
+
+    <select id="getTotal" parameterType="Map" resultType="Integer">
+  		select count(id) from user where username like #{username} and email like #{email}
+        <if test="role !=null and role!=''">
+            and role = #{role}
+        </if>
+  	</select>
+
+    <delete id="deleteOne">
+        delete from user where id=#{id}
+    </delete>
+
+    <update id="deleteMany" parameterType="String">
+  		delete from user where id in (${value})
+  	</update>
+<!--    按用户名查找信息-->
+<!--    <select id="i" parameterType="String" resultType="User">-->
+<!--  		select * from user where username = #{username}-->
+<!--  	</select>-->
+
+    <update id="add" parameterType="User">
+  		insert into user(id,username,password,email,role) values(null,#{username},#{password},#{email},#{role})
+  	</update>
+    <update id="update" parameterType="User">
+  		update user set username = #{username},password = #{password},email = #{email},role = #{role} where id = #{id}
+  	</update>
+</mapper>
